@@ -5,6 +5,10 @@
  */
 package server;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 /**
  *
  * @author Rafa_
@@ -88,7 +92,7 @@ public class Server {
         }
     }
 
-    public static void movePlayer(char player, char movimento) {
+    public static void aguardaPlayer(char player, char movimento) {
         // player, simbolo valido dos jogadores no campo
         // movimentos:
         //         w ou W --> para cima
@@ -100,6 +104,42 @@ public class Server {
         //         sempre que chegar a um extremo, time inverso ganha.
 
         // aqui será recebida um pacote UDP com a movimentação de determinado jogador
+        
+         
+        try {
+            int porta = 8000;
+
+            DatagramSocket socket = new DatagramSocket();
+            InetAddress address = InetAddress.getByName("177.44.248.11");
+            socket.setBroadcast(true);
+
+            while (true) {
+                String mensagem = "A vaca morreu";
+                byte[] buffer = mensagem.getBytes();
+
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, porta);
+                socket.send(packet);
+                
+                InetAddress client = packet.getAddress();
+                
+                int clientPort = packet.getPort();
+                
+                String efetiva = new String(buffer, 0 , packet.getLength());
+                
+                if (efetiva.startsWith("movePlayer(") && efetiva.endsWith(")")){
+                    
+                   // movePlayer("A", "W");
+                    
+                }
+                Thread.sleep(1000);
+            }
+            
+            //socket.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
     }
 
     public static int getColPlayer(char player) {
