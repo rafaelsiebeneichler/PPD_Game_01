@@ -8,6 +8,7 @@ package server;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 
 /**
  *
@@ -104,8 +105,6 @@ public class Server {
         //         sempre que chegar a um extremo, time inverso ganha.
 
         // aqui será recebida um pacote UDP com a movimentação de determinado jogador
-        
-         
         try {
             int porta = 8000;
 
@@ -119,27 +118,25 @@ public class Server {
 
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, porta);
                 socket.send(packet);
-                
+
                 InetAddress client = packet.getAddress();
-                
+
                 int clientPort = packet.getPort();
-                
-                String efetiva = new String(buffer, 0 , packet.getLength());
-                
-                if (efetiva.startsWith("movePlayer(") && efetiva.endsWith(")")){
-                    
-                   // movePlayer("A", "W");
-                    
+
+                String efetiva = new String(buffer, 0, packet.getLength());
+
+                if (efetiva.startsWith("movePlayer(") && efetiva.endsWith(")")) {
+
+                    // movePlayer("A", "W");
                 }
                 Thread.sleep(1000);
             }
-            
+
             //socket.close();
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
+
     }
 
     public static int getColPlayer(char player) {
@@ -168,16 +165,17 @@ public class Server {
         // retorna a posicao do jogador no tabuleiro
     }
 
-    public static void main(String[] args) {
-        inicializaJogo();
+    public static void main(String[] args) throws SocketException {
+
+        new EchoServer().start(); //inicia o servidor
+
+      /* inicializaJogo();
 
         while (true) {
 
             mostraCampo();
 
-        }
-
+        }*/
     }
 
 }
-
